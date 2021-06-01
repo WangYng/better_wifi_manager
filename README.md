@@ -64,6 +64,6 @@ Info.plist -> add Privacy - Location When In Use Usage Description.
 
 ## Feature
 - [x] determine WiFi enable. 
-- [x] current WiFi info.
+- [x] get WiFi info.
 - [x] scan wifi. (only Android)
 
