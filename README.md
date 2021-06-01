@@ -17,6 +17,21 @@ dependencies:
 $ flutter packages get
 ```
 
+3. Config permission
+#### iOS
+iOS -> TARGETS -> Signing $ Capabilities -> +Capability -> Access WiFi Information.
+iOS -> Info.plist -> add Privacy - Location When In Use Usage Description.
+
+#### Android
+AndroidManifest.xml
+```xml
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+```
+
 ## Normal usage
 
 1. ensure wifi is opened.
