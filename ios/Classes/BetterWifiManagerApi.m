@@ -78,6 +78,27 @@
             [channel setMessageHandler:nil];
         }
     }
+    {
+        FlutterBasicMessageChannel *channel =[FlutterBasicMessageChannel messageChannelWithName:@"com.wangyng.better_wifi_manager.pushToWifiSettingPage" binaryMessenger:[registrar messenger]];
+
+        if (api != nil) {
+            [channel setMessageHandler:^(id  message, FlutterReply reply) {
+
+                NSMutableDictionary<NSString *, NSObject *> *wrapped = [NSMutableDictionary new];
+                if ([message isKindOfClass:[NSDictionary class]]) {
+
+                    [api pushToWifiSettingPage];
+
+                    wrapped[@"result"] = @{};
+                } else {
+                    wrapped[@"error"] = @{@"message": @"parse message error"};
+                }
+                reply(wrapped);
+            }];
+        } else {
+            [channel setMessageHandler:nil];
+        }
+    }
 }
 
 

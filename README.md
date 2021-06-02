@@ -8,7 +8,7 @@ A simple Wifi manager for Flutter.
 
 ```yaml
 dependencies:
-  better_wifi_manager: ^0.0.2
+  better_wifi_manager: ^0.0.3
 ```
 
 2. Install it

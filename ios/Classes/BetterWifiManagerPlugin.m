@@ -47,5 +47,11 @@
     return status == ReachableViaWiFi;
 }
 
+- (void)pushToWifiSettingPage {
+    NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+       [[UIApplication sharedApplication] openURL:url];
+    }
+}
 
 @end

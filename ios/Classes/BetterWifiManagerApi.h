@@ -20,6 +20,9 @@
 // 获取wifi状态
 - (BOOL)isWifiOpen;
 
+// 跳转wifi设置页面
+- (void)pushToWifiSettingPage;
+
 @end
 
 @interface BetterWifiManagerApi : NSObject
