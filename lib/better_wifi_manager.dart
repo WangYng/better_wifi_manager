@@ -111,10 +111,10 @@ class BetterWifiManager {
     }
   }
 
-  // 跳转到位置授权页面
-  Future<void> pushToLocationPermissionPage() async {
+  // 跳转到位置设置页面
+  Future<void> pushToLocationSettingPage() async {
     const channel = BasicMessageChannel<dynamic>(
-        'com.wangyng.better_wifi_manager.pushToLocationPermissionPage', StandardMessageCodec());
+        'com.wangyng.better_wifi_manager.pushToLocationSettingPage', StandardMessageCodec());
     final Map<String, dynamic> requestMap = {};
     final reply = await channel.send(requestMap);
 

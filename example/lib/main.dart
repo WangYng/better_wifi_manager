@@ -80,8 +80,8 @@ class _MyAppState extends State<MyApp> {
                 },
               ),
               CupertinoButton(
-                child: Text("pushToLocationPermission"),
-                onPressed: () => wifiManager.pushToLocationPermissionPage(),
+                child: Text("pushToLocationSettingPage"),
+                onPressed: () => wifiManager.pushToLocationSettingPage(),
               ),
               CupertinoButton(
                 child: Text("getWifiInfo"),

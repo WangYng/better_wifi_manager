@@ -119,7 +119,7 @@ public class BetterWifiManagerPlugin implements FlutterPlugin, BetterWifiManager
     }
 
     @Override
-    public void pushToLocationPermissionPage(Context context) {
+    public void pushToLocationSettingPage(Context context) {
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);

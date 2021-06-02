@@ -38,7 +38,7 @@ public interface BetterWifiManagerApi {
     void pushToWifiSettingPage(Context context);
 
     // 跳转到位置授权页面
-    void pushToLocationPermissionPage(Context context);
+    void pushToLocationSettingPage(Context context);
 
     static void setup(BinaryMessenger binaryMessenger, BetterWifiManagerApi api, Context context) {
         { // scanWifi
@@ -164,13 +164,13 @@ public interface BetterWifiManagerApi {
                 channel.setMessageHandler(null);
             }
         }
-        { // pushToLocationPermissionPage
-            BasicMessageChannel<Object> channel = new BasicMessageChannel<>(binaryMessenger, "com.wangyng.better_wifi_manager.pushToLocationPermissionPage", new StandardMessageCodec());
+        { // pushToLocationSettingPage
+            BasicMessageChannel<Object> channel = new BasicMessageChannel<>(binaryMessenger, "com.wangyng.better_wifi_manager.pushToLocationSettingPage", new StandardMessageCodec());
             if (api != null) {
                 channel.setMessageHandler((message, reply) -> {
                     Map<String, HashMap<String, Object>> wrapped = new HashMap<>();
                     try {
-                        api.pushToLocationPermissionPage(context);
+                        api.pushToLocationSettingPage(context);
 
                         HashMap<String, Object> result = new HashMap<>();
                         wrapped.put("result", result);
