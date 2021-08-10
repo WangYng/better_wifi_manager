@@ -40,7 +40,8 @@
             completion(NO);
         }
     } else {
-        completion(NO);
+        // 低版本直接返回成功
+        completion(YES);
     }
 }
 
