@@ -8,7 +8,7 @@ A simple Wifi manager for Flutter.
 
 ```yaml
 dependencies:
-  better_wifi_manager: ^0.0.3
+  better_wifi_manager: ^0.0.4
 ```
 
 2. Install it
@@ -20,7 +20,8 @@ $ flutter packages get
 3. Config permission <br/>
 #### iOS
 > TARGETS -> Signing $ Capabilities -> +Capability -> Access WiFi Information. <br/>
-Info.plist -> add Privacy - Location When In Use Usage Description.
+Info.plist -> add Privacy - NSLocationWhenInUseUsageDescription.
+Info.plist -> add Privacy - NSLocationTemporaryUsageDescriptionDictionary.
 
 #### Android
 > AndroidManifest.xml
@@ -37,6 +38,7 @@ Info.plist -> add Privacy - Location When In Use Usage Description.
 1. ensure wifi is opened.
 
 2. request location permission.
+2.1 request accuracy location permission for iOS.
 
 3. get wifi info or scan wifi list.
 

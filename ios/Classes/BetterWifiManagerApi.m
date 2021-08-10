@@ -10,7 +10,29 @@
 @implementation BetterWifiManagerApi
 
 + (void)setup:(NSObject<FlutterPluginRegistrar>*)registrar api:(id<BetterWifiManagerApiDelegate>)api {
-    
+    {
+        FlutterBasicMessageChannel *channel =[FlutterBasicMessageChannel messageChannelWithName:@"com.wangyng.better_wifi_manager.requestTemporaryFullAccuracyAuthorization" binaryMessenger:[registrar messenger]];
+        
+        if (api != nil) {
+            [channel setMessageHandler:^(id  message, FlutterReply reply) {
+                
+                NSMutableDictionary<NSString *, NSObject *> *wrapped = [NSMutableDictionary new];
+                if ([message isKindOfClass:[NSDictionary class]]) {
+                    
+                    [api requestTemporaryFullAccuracyAuthorizationWithCompletion:^(BOOL granted) {
+                        wrapped[@"result"] = @{@"granted": @(granted)};
+                        reply(wrapped);
+                    }];
+
+                } else {
+                    wrapped[@"error"] = @{@"message": @"parse message error"};
+                    reply(wrapped);
+                }
+            }];
+        } else {
+            [channel setMessageHandler:nil];
+        }
+    }
     {
         FlutterEventChannel *eventChannel = [FlutterEventChannel eventChannelWithName:@"com.wangyng.better_wifi_manager/scanResultListenerEvent" binaryMessenger:[registrar messenger]];
         BetterWifiManagerEventSink *eventSink = [[BetterWifiManagerEventSink alloc] init];
@@ -45,13 +67,15 @@
                 NSMutableDictionary<NSString *, NSObject *> *wrapped = [NSMutableDictionary new];
                 if ([message isKindOfClass:[NSDictionary class]]) {
                     
-                    NSString *wifiInfo = [api getWifiInfo];
+                    [api getWifiInfoWithCompletion:^(NSString *wifiInfo) {
+                        wrapped[@"result"] = @{@"SSID": wifiInfo};
+                        reply(wrapped);
+                    }];
                     
-                    wrapped[@"result"] = @{@"SSID": wifiInfo};
                 } else {
                     wrapped[@"error"] = @{@"message": @"parse message error"};
+                    reply(wrapped);
                 }
-                reply(wrapped);
             }];
         } else {
             [channel setMessageHandler:nil];

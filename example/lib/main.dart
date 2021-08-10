@@ -33,9 +33,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    PermissionHandler().requestPermissions([PermissionGroup.locationWhenInUse]).then((value) {
-      if (value.values.first != PermissionStatus.granted) {
-        PermissionHandler().requestPermissions([PermissionGroup.locationWhenInUse]);
+    PermissionHandler().requestPermissions([PermissionGroup.locationWhenInUse]).then((value) async {
+      if (value.values.first == PermissionStatus.granted) {
+        if (Platform.isIOS) {
+          final result = await BetterWifiManager.requestTemporaryFullAccuracyAuthorization();
+          print("result $result");
+        }
       }
     });
   }

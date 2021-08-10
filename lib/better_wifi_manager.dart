@@ -5,6 +5,29 @@ class BetterWifiManager {
   final Stream scanResultStream =
       EventChannel("com.wangyng.better_wifi_manager/scanResultListenerEvent").receiveBroadcastStream();
 
+  // 适配 iOS 14：获取手机所连接的WiFi信息时，需要请求精确定位权限。
+  static Future<bool> requestTemporaryFullAccuracyAuthorization() async {
+    const channel =
+    BasicMessageChannel<dynamic>('com.wangyng.better_wifi_manager.requestTemporaryFullAccuracyAuthorization', StandardMessageCodec());
+
+    final Map<String, dynamic> requestMap = {};
+    final reply = await channel.send(requestMap);
+
+    if (!(reply is Map)) {
+      _throwChannelException();
+    }
+
+    final replyMap = Map<String, dynamic>.from(reply);
+    if (replyMap['error'] != null) {
+      final error = Map.from(replyMap['error']);
+      _throwException(error);
+      return false;
+    } else {
+      final result = Map<String, dynamic>.from(replyMap["result"]);
+      return result["granted"];
+    }
+  }
+
   // 获取wifi搜索信息
   Future<void> scanWifi() async {
     const channel =

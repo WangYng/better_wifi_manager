@@ -5,10 +5,13 @@
 #import <ifaddrs.h>
 #import <net/if.h>
 #import "BetterWifiManagerReachability.h"
+#import <NetworkExtension/NetworkExtension.h>
 
 @interface BetterWifiManagerPlugin ()
 
 @property (nonatomic, strong) BetterWifiManagerEventSink *eventSink;
+
+@property (nonatomic, strong) CLLocationManager *location;
 
 @end
 
@@ -18,25 +21,63 @@
     [BetterWifiManagerApi setup:registrar api:instance];
 }
 
+- (void)requestTemporaryFullAccuracyAuthorizationWithCompletion:(void(^)(BOOL))completion {
+    if (@available(iOS 14.0, *)) {
+        if (self.location == nil) {
+            self.location = [CLLocationManager new];
+        }
+        CLAuthorizationStatus authorizationStatus = self.location.authorizationStatus;
+        if (authorizationStatus == kCLAuthorizationStatusAuthorizedAlways || authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse) {
+            if (self.location.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy) {
+                __weak typeof(self) ws = self;
+                [self.location requestTemporaryFullAccuracyAuthorizationWithPurposeKey:@"WantsToGetWiFiSSID" completion:^(NSError *error) {
+                    completion(ws.location.accuracyAuthorization == CLAccuracyAuthorizationFullAccuracy);
+                }];
+            } else {
+                completion(YES);
+            }
+        } else {
+            completion(NO);
+        }
+    } else {
+        completion(NO);
+    }
+}
+
 - (void)scanWifiWithEventSink:(BetterWifiManagerEventSink *)eventSink {
     self.eventSink = eventSink;
     
-    NSMutableDictionary<NSString *, NSObject *> *event = [NSMutableDictionary new];
-    event[@"scanResult"] = [NSString stringWithFormat:@"[{\"SSID\":\"%@\"}]", [self getWifiInfo]];
-    self.eventSink.event(event);
+    __weak typeof(self) ws = self;
+    [self getWifiInfoWithCompletion:^(NSString *SSID) {
+        NSMutableDictionary<NSString *, NSObject *> *event = [NSMutableDictionary new];
+        event[@"scanResult"] = [NSString stringWithFormat:@"[{\"SSID\":\"%@\"}]", SSID];
+        ws.eventSink.event(event);
+    }];
 }
 
-- (NSString *)getWifiInfo {
-    NSString *currentSSID = @"";
-    CFArrayRef networkInterface = CNCopySupportedInterfaces();
-    if (networkInterface != nil) {
-        CFDictionaryRef networkInfo = CNCopyCurrentNetworkInfo(CFArrayGetValueAtIndex(networkInterface, 0));
-        if (networkInfo != nil) {
-            currentSSID = CFBridgingRelease(CFDictionaryGetValue(networkInfo, kCNNetworkInfoKeySSID));
-        }
+- (void)getWifiInfoWithCompletion:(void(^)(NSString *))completion {
+    if (@available(iOS 14.0, *)) {
+        [NEHotspotNetwork fetchCurrentWithCompletionHandler:^(NEHotspotNetwork * _Nullable currentNetwork) {
+            if (currentNetwork) {
+                completion(currentNetwork.SSID);
+            } else {
+                completion(@"");
+            }
+        }];
+    } else {
+         CFArrayRef networkInterface = CNCopySupportedInterfaces();
+         if (networkInterface != nil) {
+            CFDictionaryRef networkInfo = CNCopyCurrentNetworkInfo(CFArrayGetValueAtIndex(networkInterface, 0));
+            if (networkInfo != nil) {
+                NSString *SSID = CFBridgingRelease(CFDictionaryGetValue(networkInfo, kCNNetworkInfoKeySSID));
+                completion(SSID);
+            } else {
+                completion(@"");
+            }
+         } else {
+             completion(@"");
+         }
     }
-    
-    return currentSSID;
 }
 
 - (BOOL)isWifiOpen {
