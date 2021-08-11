@@ -22,6 +22,7 @@ $ flutter packages get
 > TARGETS -> Signing $ Capabilities -> +Capability -> Access WiFi Information. <br/>
 Info.plist -> add Privacy - NSLocationWhenInUseUsageDescription.
 Info.plist -> add Privacy - NSLocationTemporaryUsageDescriptionDictionary.
+Info.plist -> add Privacy - NSLocationTemporaryUsageDescriptionDictionary - key - WantsToGetWiFiSSID.
 
 #### Android
 > AndroidManifest.xml
